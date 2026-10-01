@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aquify · Water Quality Classification</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2C12 2 4 11.5 4 16.2 4 20.5 7.6 23 12 23s8-2.5 8-6.8C20 11.5 12 2 12 2z" fill="currentColor"/></svg>
+      </span>
+      Aquify
+    </div>
+    <nav class="site-nav">
+      <a href="#predict">Test a sample</a>
+      <a href="#dashboard">Dataset</a>
+      <a href="#models">Models</a>
+      <a href="#history">History</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <h1>Is this water safe to drink?</h1>
+        <p class="hero-sub">
+          Enter a lab reading across 20 chemical and microbial parameters.
+          An SVM and a Random Forest estimate the sample's safe or unsafe
+          label based on patterns learned from the project dataset.
+        </p>
+        <div class="hero-actions">
+          <a href="#predict" class="btn btn-primary">Classify a sample</a>
+          <a href="#dashboard" class="btn btn-ghost">View the dataset</a>
+        </div>
+      </div>
+      <!-- Filled in by script.js from GET /api/stats and /api/metrics -->
+      <div class="hero-panel" id="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-value" id="stat-total">–</span>
+          <span class="hero-stat-label">dataset rows</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-value" id="stat-safe">–</span>
+          <span class="hero-stat-label">labelled safe</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-value" id="stat-f1">–</span>
+          <span class="hero-stat-label">best model F1 score</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PREDICT ============ -->
+  <section id="predict" class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Test a sample</h2>
+        <p>Fill in the 20 parameters, in the same units as the source lab report. Not sure what to enter? <button id="fill-sample" class="link-btn" type="button">Load a random sample</button> from the dataset.</p>
+      </div>
+
+      <!-- script.js builds one input per feature from GET /api/features -->
+      <form id="predict-form" class="param-grid" autocomplete="off"></form>
+
+      <div class="form-actions">
+        <button type="submit" form="predict-form" class="btn btn-primary" id="predict-btn">Classify sample</button>
+        <button type="button" id="reset-btn" class="btn btn-ghost">Reset</button>
+      </div>
+
+      <!-- Filled in by script.js after a successful POST /api/predict -->
+      <div id="result" class="result-panel" hidden></div>
+    </div>
+  </section>
+
+  <!-- ============ DASHBOARD ============ -->
+  <section id="dashboard" class="section section-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>The dataset</h2>
+        <p>The source CSV contains 1,000 rows, including 500 exact duplicates. The original cleaning script removes duplicates before the 80/20 train-test split.</p>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card">
+          <h3>Safe vs. unsafe</h3>
+          <div id="safety-bar" class="safety-bar"></div>
+          <div class="safety-legend">
+            <span><i class="dot dot-safe"></i>Safe</span>
+            <span><i class="dot dot-unsafe"></i>Unsafe</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Average concentration by parameter</h3>
+          <div id="feature-chart" class="feature-chart"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MODELS ============ -->
+  <section id="models" class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Model performance</h2>
+        <p>Both classifiers were evaluated on a held-out test split.</p>
+      </div>
+      <div class="table-wrap">
+        <table id="metrics-table" class="data-table">
+          <thead>
+            <tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1 score</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HISTORY ============ -->
+  <section id="history" class="section section-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Recent predictions</h2>
+        <p>Every classification made on this site is logged here.</p>
+      </div>
+      <div class="table-wrap">
+        <table id="history-table" class="data-table">
+          <thead>
+            <tr><th>Time</th><th>SVM</th><th>Random Forest</th><th>Agreement</th><th>Result</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>Aquify — Water Quality Classification using SVM &amp; Random Forest. Predictions are estimates for exploratory use only, not a substitute for certified laboratory testing.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
